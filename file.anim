@@ -1,0 +1,12 @@
+# Animation format for this project to make life easier
+# Format is like so
+# x y sleep "Some text"
+# 4th option (text) is optional
+# if text is blank or missing nothing will be printed
+# The rest are required
+# Delay is anything above the normal 10fps to make life easier
+
+
+50 50 0
+100 10 0
+100 100 0
