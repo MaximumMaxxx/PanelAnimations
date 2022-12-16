@@ -5,8 +5,15 @@
 # if text is blank or missing nothing will be printed
 # The rest are required
 # Delay is anything above the normal 10fps to make life easier
+type "RAmogi"
 
-
-50 50 0
-100 10 0
-100 100 0
+50 50 1000
+100 50 0
+100 50 500 "I just vented"
+100 70 0 "Imma go to electrical"
+100 90 0 "Imma go to electrical"
+100 110 0 "Imma go to electrical"
+110 130 0 "Imma go to electrical"
+120 150 0 "Imma go to electrical"
+130 170 0
+140 190 0

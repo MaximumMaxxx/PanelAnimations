@@ -4,6 +4,7 @@ import java.util.*;
 
 public class AnimParser {
     List<AnimFrame> frames = new ArrayList<>();
+    public static String type;
 
     static class AnimFrame {
         public int x;
@@ -25,17 +26,20 @@ public class AnimParser {
                     continue;
                 }
 
-                String[] sliced = data.split(" ");
+                if (data.startsWith("type")) {
+                    type = getStringFromQuotes(data.split(" ")[1]);
+                    continue;
+                }
+
+
+                String[] sliced = data.split(" ", 4);
                 int x = Integer.parseInt(sliced[0]);
                 int y = Integer.parseInt(sliced[1]);
-                int delay = Integer.parseInt(sliced[3]);
+                int delay = Integer.parseInt(sliced[2]);
                 String text = "";
                 if (sliced.length == 4) {
                     text = sliced[3];
-                    if (text.chars().toArray()[0] == '"') {
-                        // Trim the string to not have quotes
-                        text = text.substring(1, text.length() - 1);
-                    }
+                    text = getStringFromQuotes(text);
                 }
 
                 AnimFrame frame = new AnimFrame();
@@ -51,8 +55,17 @@ public class AnimParser {
             System.out.println("An error occurred.");
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Error parsing line " + lineNumber);
+            e.printStackTrace();
         } catch (NumberFormatException e) {
             System.out.println("Invalid format at " + lineNumber);
         }
+    }
+
+    static String getStringFromQuotes(String input) {
+        if (input.chars().toArray()[0] == '"') {
+            // Trim the string to not have quotes
+            input = input.substring(1, input.length() - 1);
+        }
+        return input;
     }
 }
