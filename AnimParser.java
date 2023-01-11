@@ -17,8 +17,9 @@ public class AnimParser {
             while (Reader.hasNextLine()) {
                 lineNumber += 1;
                 String data = Reader.nextLine().trim();
+                System.out.println("Data: " + data);
 
-                if (data.startsWith("#") || data.equals("")) {
+                if (commentOrBlank(data)) {
                     continue;
                 }
 
@@ -32,14 +33,17 @@ public class AnimParser {
                     continue;
                 }
 
-                if (types.containsKey(data.split(" ")[0].substring(0, data.split(" ")[0].length() - 1))) {
+                String firstKeyword = data.split(" ")[0];
+                String withoutEnd = data.substring(0, firstKeyword.length() - 1);
+                System.out.println(withoutEnd);
+                if (types.containsKey(withoutEnd)) {
                     String identifier = data.split(" ")[0];
                     if (!identifier.endsWith(":")) {
                         System.out.println("Invalid identifier for section block at line: " + lineNumber);
                         continue;
                     }
                     // Set out type so it works with the legacy code
-                    type = types.get(identifier.substring(0, identifier.length() - 2));
+                    type = types.get(withoutEnd);
                     continue;
                 }
 
@@ -72,6 +76,10 @@ public class AnimParser {
         } catch (NumberFormatException e) {
             System.out.println("Invalid number format at " + lineNumber);
         }
+    }
+
+    private static boolean commentOrBlank(String data) {
+        return data.startsWith("#") || data.equals("");
     }
 
     static String getStringFromQuotes(String input) {

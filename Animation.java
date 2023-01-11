@@ -41,11 +41,12 @@ class Animation {
     }
 
 
-    static void processFrame(Graphics g, AnimFrame frame, String type, Color color) {
+    static void processFrame(Graphics g, AnimFrame frame, String type, Color color)  {
         if (frame.text != null) {
             g.setColor(Color.BLACK);
             g.drawString(frame.text, frame.x + 40, frame.y - 5);
         }
+        System.out.println("Type: " + type);
         switch (type) {
             case "LAmogi":
                 drawLeftAmongi(g, frame, color);
@@ -53,6 +54,9 @@ class Animation {
                 drawAmongi(g, frame, color);
             case "DeadAmgi":
                 drawDeadAmogi(g, frame, color);
+            default:
+                System.out.println("AAAAAAAAAAAAAAAAAAA");
+                System.exit(-2049032409);
         }
     }
 
