@@ -1,0 +1,10 @@
+name green "GAmogi"
+name red "RAmogi"
+
+red:
+140 190 0
+
+green:
+190 190 0
+190 190 100
+190 190 700 "Hi red!"

@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 class Animation {
 
@@ -18,26 +19,29 @@ class Animation {
         panel.sleep(200);
 
         AnimParser parser = new AnimParser("animations/1.anim");
-        for (AnimParser.AnimFrame frame : parser.frames) {
-            panel.sleep(1000 / FPS);
-            clearRect(g, Color.WHITE, panel.getWidth(), panel.getHeight());
-            processFrame(g, frame, AnimParser.type, Color.red);
-            gPanel.drawImage(offscreen, 0, 0, panel);
-            panel.sleep(frame.delay);
-        }
+        renderParser(panel, gPanel, offscreen, g, parser);
+        parser = new AnimParser("animations/2.anim");
+        renderParser(panel, gPanel, offscreen, g, parser);
 
-        AnimParser[] parsers = new AnimParser[]{
-                new AnimParser("animations/2.red.anim"),
-                new AnimParser("animations/2.green.anim")
-        };
 
         // I think for timing you'll need stacks and a hashmap
         // Good luck man
 
+
+    }
+
+    private static void renderParser(DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g, AnimParser parser) {
+        for (AnimFrame frame : parser.frames) {
+            panel.sleep(1000 / FPS);
+            clearRect(g, Color.WHITE, panel.getWidth(), panel.getHeight());
+            processFrame(g, frame, frame.type, Color.red);
+            gPanel.drawImage(offscreen, 0, 0, panel);
+            panel.sleep(frame.delay);
+        }
     }
 
 
-    static void processFrame(Graphics g, AnimParser.AnimFrame frame, String type, Color color) {
+    static void processFrame(Graphics g, AnimFrame frame, String type, Color color) {
         if (frame.text != null) {
             g.setColor(Color.BLACK);
             g.drawString(frame.text, frame.x + 40, frame.y - 5);
@@ -52,7 +56,7 @@ class Animation {
         }
     }
 
-    private static void drawDeadAmogi(Graphics g, AnimParser.AnimFrame frame, Color color) {
+    private static void drawDeadAmogi(Graphics g, AnimFrame frame, Color color) {
     }
 
     // This method fills a display of the given dimensions with the given Color
@@ -64,7 +68,7 @@ class Animation {
         g.setColor(current);
     }
 
-    public static void drawLeftAmongi(Graphics g, AnimParser.AnimFrame frame, Color color) {
+    public static void drawLeftAmongi(Graphics g, AnimFrame frame, Color color) {
         DrawAmogiBase(g, frame.x, frame.y, color);
         g.fillOval(frame.x - 12, frame.y + 15, 30, 10);
 
@@ -72,7 +76,7 @@ class Animation {
         g.fillRect(frame.x + 40, frame.y + 12, 5, 20);
     }
 
-    public static void drawAmongi(Graphics g, AnimParser.AnimFrame frame, Color color) {
+    public static void drawAmongi(Graphics g, AnimFrame frame, Color color) {
         DrawAmogiBase(g, frame.x, frame.y, color);
         g.fillOval(frame.x + 20, frame.y + 15, 30, 10);
 

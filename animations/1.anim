@@ -5,8 +5,9 @@
 # if text is blank or missing nothing will be printed
 # The rest are required
 # Delay is anything above the normal 10fps to make life easier
-type "RAmogi"
+name red "RAmogi"
 
+red:
 50 50 1000
 100 50 0
 100 50 500 "I just vented"
