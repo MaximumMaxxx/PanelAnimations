@@ -5,7 +5,7 @@
 # if text is blank or missing nothing will be printed
 # The rest are required
 # Delay is anything above the normal 10fps to make life easier
-name red "RAmogi"
+declare red "RAmogi" Red
 
 red:
 50 50 1000

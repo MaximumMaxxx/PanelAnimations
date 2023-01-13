@@ -1,11 +1,14 @@
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 public class AnimParser {
     List<AnimFrame> frames = new ArrayList<>();
     public HashMap<String, String> types = new HashMap<>();
-    public String ifilepath = null; // This should be unique for each parser. If it's not then it'll be pretty useless
+    public String ifilepath; // This should be unique for each parser. If it's not then it'll be pretty useless
     public String type;
+    public HashMap<String, Mogus> mogusMap = new HashMap<>();
 
     public AnimParser(String filepath) {
         ifilepath = filepath;
@@ -17,33 +20,37 @@ public class AnimParser {
             while (Reader.hasNextLine()) {
                 lineNumber += 1;
                 String data = Reader.nextLine().trim();
-                System.out.println("Data: " + data);
 
                 if (commentOrBlank(data)) {
                     continue;
                 }
 
-                if (data.startsWith("name")) {
-                    String[] split = data.split(" ");
+                // Init a few helper variables
+                String[] words = data.split(" ");
+                String firstKeyword = words[0];
+                String withoutLastChar = data.substring(0, firstKeyword.length() - 1);
+
+                if (data.startsWith("declare")) {
                     try {
-                        types.put(split[1], getStringFromQuotes(split[2]));
-                    } catch (Exception _e) {
-                        System.out.println("Invalid `name` declaraction at line " + lineNumber);
+                        types.put(words[1], getStringFromQuotes(words[2]));
+                        types.put(getStringFromQuotes(words[2]), words[1]);
+                        Mogus mogus = new Mogus(getColorFromString(words[3]));
+                        mogus.type = getStringFromQuotes(words[2]);
+                        mogusMap.put(words[1], mogus);
+                    } catch (Exception e) {
+                        System.out.println("Invalid `declare` declaraction at line " + lineNumber + e.getMessage());
                     }
                     continue;
                 }
 
-                String firstKeyword = data.split(" ")[0];
-                String withoutEnd = data.substring(0, firstKeyword.length() - 1);
-                System.out.println(withoutEnd);
-                if (types.containsKey(withoutEnd)) {
+                if (types.containsKey(withoutLastChar)) {
                     String identifier = data.split(" ")[0];
                     if (!identifier.endsWith(":")) {
                         System.out.println("Invalid identifier for section block at line: " + lineNumber);
                         continue;
                     }
                     // Set out type so it works with the legacy code
-                    type = types.get(withoutEnd);
+                    type = types.get(withoutLastChar);
                     continue;
                 }
 
@@ -57,13 +64,25 @@ public class AnimParser {
                     text = sliced[3];
                     text = getStringFromQuotes(text);
                 }
+                Mogus prevMogus = mogusMap.get(types.get(type));
+                prevMogus.x = x;
+                prevMogus.y = y;
+                prevMogus.text = text;
+                mogusMap.replace(types.get(type), prevMogus);
 
                 AnimFrame frame = new AnimFrame();
-                frame.x = x;
-                frame.y = y;
                 frame.delay = delay;
-                frame.text = text;
-                frame.type = this.type;
+                List<Mogus> mappedMogi = mogusMap.values().stream().toList();
+                frame.mogi = new ArrayList<>();
+                for (Mogus mogi :
+                        mappedMogi) {
+                    Mogus tempMogi = new Mogus(mogi.color);
+                    tempMogi.type = mogi.type;
+                    tempMogi.x = mogi.x;
+                    tempMogi.y = mogi.y;
+                    tempMogi.text = mogi.text;
+                    frame.mogi.add(tempMogi);
+                }
 
                 frames.add(frame);
             }
@@ -75,6 +94,9 @@ public class AnimParser {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             System.out.println("Invalid number format at " + lineNumber);
+        } catch (NullPointerException e) {
+            System.out.println("Something was null and that's bad " + lineNumber);
+            e.printStackTrace();
         }
     }
 
@@ -82,11 +104,21 @@ public class AnimParser {
         return data.startsWith("#") || data.equals("");
     }
 
-    static String getStringFromQuotes(String input) {
+    private static String getStringFromQuotes(String input) {
         if (input.chars().toArray()[0] == '"') {
             // Trim the string to not have quotes
             input = input.substring(1, input.length() - 1);
         }
         return input;
+    }
+
+    private Color getColorFromString(String colorCode) {
+        return switch (colorCode.toLowerCase()) {
+            case "green" -> Color.GREEN;
+            case "red" -> Color.RED;
+            case "black" -> Color.BLACK;
+            case "blue" -> Color.BLUE;
+            default -> Color.red;
+        };
     }
 }

@@ -1,7 +1,6 @@
+import java.util.List;
+
 class AnimFrame {
-    public int x;
-    public int y;
+    public List<Mogus> mogi;
     public int delay;
-    public String text;
-    public String type;
 }

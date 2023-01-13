@@ -1,5 +1,5 @@
-name green "GAmogi"
-name red "RAmogi"
+declare green "LAmogi" Green
+declare red "RAmogi" Red
 
 red:
 140 190 0
@@ -8,3 +8,7 @@ green:
 190 190 0
 190 190 100
 190 190 700 "Hi red!"
+190 190 0
+
+red:
+120 190 500 "Hello green!"
