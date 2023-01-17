@@ -2,7 +2,7 @@ declare green "LAmogi" Green
 declare red "RAmogi" Red
 
 red:
-140 190 0
+120 190 0
 
 green:
 190 190 0
@@ -12,3 +12,25 @@ green:
 
 red:
 120 190 500 "Hello green!"
+120 190 500
+
+green:
+190 190 300 "Ok bye"
+
+switch green "RAmogi" Green
+
+190 190 500 "Ok bye"
+210 190 0
+230 190 0
+250 190 0
+
+red:
+200 190 400 "Haha get rekt"
+200 190 400 "I'm actually the imposter"
+200 190 400 "Say goodbye!"
+
+visb red h
+# switch green "LAmogi" Green
+
+green:
+250 190 0 "Wait where did he go?!"

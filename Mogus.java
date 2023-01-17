@@ -6,11 +6,13 @@ public class Mogus {
     public String type;
     public String text;
     public Color color;
+    public boolean enabled;
 
 
     public Mogus(Color color) {
         // Mogi have a static color
         this.color = color;
+        this.enabled = true;
     }
 
 
@@ -18,6 +20,10 @@ public class Mogus {
 
     // Render the mogi onto Graphics provided
     public void draw(Graphics g) {
+        if (!enabled) {
+            return;
+        }
+
         if (text != null) {
             g.setColor(Color.BLACK);
             // The offsets are mostly magical

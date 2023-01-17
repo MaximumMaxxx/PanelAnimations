@@ -30,7 +30,10 @@ public class AnimParser {
                 String firstKeyword = words[0];
                 String withoutLastChar = data.substring(0, firstKeyword.length() - 1);
 
-                if (data.startsWith("declare")) {
+                if (firstKeyword.equals("declare")) {
+                    if (!(words.length >= 4)) {
+                        System.out.println("Not enough parts for a `declare` on line " + lineNumber);
+                    }
                     try {
                         types.put(words[1], getStringFromQuotes(words[2]));
                         types.put(getStringFromQuotes(words[2]), words[1]);
@@ -41,10 +44,57 @@ public class AnimParser {
                         System.out.println("Invalid `declare` declaraction at line " + lineNumber + e.getMessage());
                     }
                     continue;
+
+                } else if (firstKeyword.equals("switch")) {
+                    // Switch the mapping in types, so you can switch looking directions
+                    if (!types.containsKey(words[1])) {
+                        System.out.println("Invalid switch keywords at line " + lineNumber);
+                        continue;
+                    }
+
+                    if (!(words.length >= 4)) {
+                        System.out.println("Not enough parts for a `switch` on line " + lineNumber);
+                        continue;
+                    }
+
+                    types.replace(words[1], words[2]);
+                    Mogus mongi = mogusMap.get(words[1]);
+                    mongi.type = getStringFromQuotes(words[2]);
+                    mongi.color = getColorFromString(words[3]);
+                    mogusMap.replace(words[1], mongi);
+                    continue;
                 }
 
-                if (types.containsKey(withoutLastChar)) {
-                    String identifier = data.split(" ")[0];
+                // Keyword to show or hide an animation object
+                else if (firstKeyword.equals("visb")) {
+                    if (!types.containsKey(words[1])) {
+                        System.out.println("Can't switch an animation object that doesn't exist " + lineNumber);
+                        continue;
+                    }
+
+                    if (!(words.length >= 3)) {
+                        System.out.println("Not enough parts for a `visb` command on line " + lineNumber);
+                        continue;
+                    }
+
+                    switch (words[2]) {
+                        case "hide":
+                        case "h": {
+                            Mogus mongi = mogusMap.get(words[1]);
+                            mongi.enabled = false;
+                            mogusMap.replace(words[1], mongi);
+                        }
+                        case "show":
+                        case "s": {
+                            Mogus mongi = mogusMap.get(words[1]);
+                            mongi.enabled = true;
+                            mogusMap.replace(words[1], mongi);
+                        }
+                    }
+                    continue;
+
+                } else if (types.containsKey(withoutLastChar)) {
+                    String identifier = words[0];
                     if (!identifier.endsWith(":")) {
                         System.out.println("Invalid identifier for section block at line: " + lineNumber);
                         continue;
