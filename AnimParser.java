@@ -5,10 +5,9 @@ import java.util.List;
 
 public class AnimParser {
     List<AnimFrame> frames = new ArrayList<>();
-    public HashMap<String, String> nameInternalTypeMap = new HashMap<>();
     public String ifilepath; // This should be unique for each parser. If it's not then it'll be pretty useless
     public String currentMogusName;
-    public HashMap<String, Mogus> nameToMogusMap = new HashMap<>();
+    public HashMap<String, Mogus> nameToMoogusMap = new HashMap<>();
 
     public AnimParser(String filepath) {
         ifilepath = filepath;
@@ -39,13 +38,10 @@ public class AnimParser {
                         String variant = getStringFromQuotes(words[2]);
                         Color color = getColorFromString(words[3]);
 
-                        nameInternalTypeMap.put(name, variant);
-                        nameInternalTypeMap.put(variant, name);
-
-                        // Initialize the mogus
+                        // Initialize the mognu
                         Mogus mogus = new Mogus(color);
                         mogus.type = variant;
-                        nameToMogusMap.put(name, mogus);
+                        nameToMoogusMap.put(name, mogus);
                     } catch (Exception e) {
                         System.out.println("Invalid `declare` declaraction at line " + lineNumber + e.getMessage());
                     }
@@ -61,17 +57,16 @@ public class AnimParser {
                     String name = words[1];
                     String newType = words[2];
                     Color newColor = getColorFromString(words[3]);
-                    if (!nameInternalTypeMap.containsKey(name)) {
+                    if (!nameToMoogusMap.containsKey(name)) {
                         System.out.println("Invalid switch keywords at line " + lineNumber);
                         continue;
                     }
 
 
-                    nameInternalTypeMap.replace(name, newType);
-                    Mogus mongi = nameToMogusMap.get(name);
+                    Mogus mongi = nameToMoogusMap.get(name);
                     mongi.type = getStringFromQuotes(newType);
                     mongi.color = newColor;
-                    nameToMogusMap.put(name, mongi);
+                    nameToMoogusMap.put(name, mongi);
                     continue;
                 }
 
@@ -85,66 +80,69 @@ public class AnimParser {
                     String name = words[1];
                     String operation = words[2].toLowerCase();
 
-                    if (!nameInternalTypeMap.containsKey(name)) {
+                    if (!nameToMoogusMap.containsKey(name)) {
                         System.out.println("Can't switch an animation object that doesn't exist " + lineNumber);
                         continue;
                     }
 
                     switch (operation) {
-                        case "hide":
-                        case "h": {
-                            Mogus mongi = nameToMogusMap.get(name);
+                        case "hide", "h" -> {
+                            Mogus mongi = nameToMoogusMap.get(name);
                             mongi.enabled = false;
-                            nameToMogusMap.replace(name, mongi);
+                            nameToMoogusMap.put(name, mongi);
                         }
-                        case "show":
-                        case "s": {
-                            Mogus mongi = nameToMogusMap.get(name);
+                        case "show", "s" -> {
+                            Mogus mongi = nameToMoogusMap.get(name);
                             mongi.enabled = true;
-                            nameToMogusMap.replace(name, mongi);
+                            nameToMoogusMap.put(name, mongi);
                         }
                     }
                     continue;
 
-                } else if (nameInternalTypeMap.containsKey(withoutLastChar)) {
+                } else if (nameToMoogusMap.containsKey(withoutLastChar)) {
                     // Logic for switching which mogus is selected
                     String identifier = words[0];
                     if (!identifier.endsWith(":")) {
                         System.out.println("Invalid identifier for section block at line: " + lineNumber);
                         continue;
                     }
-                    // Set out type so it works with the legacy code
-                    currentMogusName = nameInternalTypeMap.get(withoutLastChar);
+                    currentMogusName = withoutLastChar;
                     continue;
                 }
 
 
+                String[] limitedSliced = data.split(" ", 4);
                 int x = Integer.parseInt(words[0]);
                 int y = Integer.parseInt(words[1]);
                 int delay = Integer.parseInt(words[2]);
                 String text = "";
-                if (words.length == 4) {
-                    text = words[3];
+                if (limitedSliced.length == 4) {
+                    text = limitedSliced[3];
                     text = getStringFromQuotes(text);
                 }
-                Mogus prevMogus = nameToMogusMap.get(nameInternalTypeMap.get(currentMogusName));
+
+                // Update the mungle
+                Mogus prevMogus = nameToMoogusMap.get(currentMogusName);
                 prevMogus.x = x;
                 prevMogus.y = y;
                 prevMogus.text = text;
-                nameToMogusMap.replace(nameInternalTypeMap.get(currentMogusName), prevMogus);
+                nameToMoogusMap.replace(currentMogusName, prevMogus);
 
+                // Clone the amongi into the frame
                 AnimFrame frame = new AnimFrame();
                 frame.delay = delay;
-                List<Mogus> mappedMogi = nameToMogusMap.values().stream().toList();
+                List<Mogus> mappedMogi = nameToMoogusMap.values().stream().toList();
                 frame.mogi = new ArrayList<>();
+
                 for (Mogus mogi :
                         mappedMogi) {
-                    Mogus tempMogi = new Mogus(mogi.color);
-                    tempMogi.type = mogi.type;
-                    tempMogi.x = mogi.x;
-                    tempMogi.y = mogi.y;
-                    tempMogi.text = mogi.text;
-                    frame.mogi.add(tempMogi);
+                    Mogus clonedMogus = new Mogus(mogi.color);
+                    clonedMogus.type = mogi.type;
+                    clonedMogus.x = mogi.x;
+                    clonedMogus.y = mogi.y;
+                    clonedMogus.text = mogi.text;
+                    clonedMogus.enabled = mogi.enabled;
+                    frame.mogi.add(clonedMogus);
                 }
 
                 frames.add(frame);

@@ -29,8 +29,9 @@ red:
 200 190 400 "I'm actually the imposter"
 200 190 400 "Say goodbye!"
 
-# visb red h
-# switch green "LAmogi" Green
+visb red h
+switch green "LAmogi" Green
 
 green:
+250 190 1
 250 190 0 "Wait where did he go?!"

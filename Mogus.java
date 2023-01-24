@@ -21,6 +21,7 @@ public class Mogus {
     // Render the mogi onto Graphics provided
     public void draw(Graphics g) {
         if (!enabled) {
+            System.out.println("Not printing because I'm disabled");
             return;
         }
 
