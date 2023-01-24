@@ -21,7 +21,6 @@ public class Mogus {
     // Render the mogi onto Graphics provided
     public void draw(Graphics g) {
         if (!enabled) {
-            System.out.println("Not printing because I'm disabled");
             return;
         }
 
@@ -35,7 +34,7 @@ public class Mogus {
         switch (type) {
             case "LAmogi" -> drawLeft(g);
             case "RAmogi" -> drawRight(g);
-            case "DeadAmgi" -> drawDead(g);
+            case "DAmogi" -> drawDead(g);
             default -> {
                 System.out.println("AAAAAAAAAAAAAAAAAAA");
                 System.exit(-2049032409);
@@ -46,7 +45,14 @@ public class Mogus {
 
     // ----------------------------------------------
 
-    private static void drawDead(Graphics g) {
+    private void drawDead(Graphics g) {
+        g.setColor(color);
+        drawBottomHalf(g);
+        g.drawPolygon(new int[]{
+                1
+        }, new int[]{
+                1
+        }, 1);
     }
 
     private void drawLeft(Graphics g) {
@@ -72,6 +78,12 @@ public class Mogus {
     private void drawBase(Graphics g) {
         g.setColor(color);
         g.fillArc(x, y, 40, 35, 0, 180);
+        drawBottomHalf(g);
+
+        g.setColor(Color.cyan);
+    }
+
+    private void drawBottomHalf(Graphics g) {
         g.fillPolygon(
                 new int[]{
                         x, x, x + 5, x + 5, x + 35, x + 35, x + 40, x + 40
@@ -81,8 +93,6 @@ public class Mogus {
                 },
                 8
         );
-
-        g.setColor(Color.cyan);
     }
 
 
