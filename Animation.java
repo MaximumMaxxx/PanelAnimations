@@ -17,8 +17,9 @@ class Animation {
 
         panel.sleep(200);
 
-        AnimParser parser = new AnimParser("animations/1.anim");
-        renderParser(panel, gPanel, offscreen, g, parser);
+        AnimParser parser;
+//        AnimParser parser = new AnimParser("animations/1.anim");
+//        renderParser(panel, gPanel, offscreen, g, parser);
         parser = new AnimParser("animations/2.anim");
         renderParser(panel, gPanel, offscreen, g, parser);
 
@@ -50,10 +51,6 @@ class Animation {
         g.setColor(current);
     }
 
-
-    public static int randint(int min, int max) {
-        return min + (int) (Math.random() * ((max - min) + 1));
-    }
 
     // clearRect(g, Color.WHITE, panel.getWidth(), panel.getHeight());
     // - where panel and g are local variables you defined in the calling

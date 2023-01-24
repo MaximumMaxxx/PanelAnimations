@@ -5,10 +5,10 @@ import java.util.List;
 
 public class AnimParser {
     List<AnimFrame> frames = new ArrayList<>();
-    public HashMap<String, String> types = new HashMap<>();
+    public HashMap<String, String> nameInternalTypeMap = new HashMap<>();
     public String ifilepath; // This should be unique for each parser. If it's not then it'll be pretty useless
-    public String type;
-    public HashMap<String, Mogus> mogusMap = new HashMap<>();
+    public String currentMogusName;
+    public HashMap<String, Mogus> nameToMogusMap = new HashMap<>();
 
     public AnimParser(String filepath) {
         ifilepath = filepath;
@@ -35,11 +35,17 @@ public class AnimParser {
                         System.out.println("Not enough parts for a `declare` on line " + lineNumber);
                     }
                     try {
-                        types.put(words[1], getStringFromQuotes(words[2]));
-                        types.put(getStringFromQuotes(words[2]), words[1]);
-                        Mogus mogus = new Mogus(getColorFromString(words[3]));
-                        mogus.type = getStringFromQuotes(words[2]);
-                        mogusMap.put(words[1], mogus);
+                        String name = words[1];
+                        String variant = getStringFromQuotes(words[2]);
+                        Color color = getColorFromString(words[3]);
+
+                        nameInternalTypeMap.put(name, variant);
+                        nameInternalTypeMap.put(variant, name);
+
+                        // Initialize the mogus
+                        Mogus mogus = new Mogus(color);
+                        mogus.type = variant;
+                        nameToMogusMap.put(name, mogus);
                     } catch (Exception e) {
                         System.out.println("Invalid `declare` declaraction at line " + lineNumber + e.getMessage());
                     }
@@ -47,82 +53,89 @@ public class AnimParser {
 
                 } else if (firstKeyword.equals("switch")) {
                     // Switch the mapping in types, so you can switch looking directions
-                    if (!types.containsKey(words[1])) {
-                        System.out.println("Invalid switch keywords at line " + lineNumber);
-                        continue;
-                    }
-
                     if (!(words.length >= 4)) {
                         System.out.println("Not enough parts for a `switch` on line " + lineNumber);
                         continue;
                     }
 
-                    types.replace(words[1], words[2]);
-                    Mogus mongi = mogusMap.get(words[1]);
-                    mongi.type = getStringFromQuotes(words[2]);
-                    mongi.color = getColorFromString(words[3]);
-                    mogusMap.replace(words[1], mongi);
+                    String name = words[1];
+                    String newType = words[2];
+                    Color newColor = getColorFromString(words[3]);
+                    if (!nameInternalTypeMap.containsKey(name)) {
+                        System.out.println("Invalid switch keywords at line " + lineNumber);
+                        continue;
+                    }
+
+
+                    nameInternalTypeMap.replace(name, newType);
+                    Mogus mongi = nameToMogusMap.get(name);
+                    mongi.type = getStringFromQuotes(newType);
+                    mongi.color = newColor;
+                    nameToMogusMap.put(name, mongi);
                     continue;
                 }
 
                 // Keyword to show or hide an animation object
                 else if (firstKeyword.equals("visb")) {
-                    if (!types.containsKey(words[1])) {
-                        System.out.println("Can't switch an animation object that doesn't exist " + lineNumber);
-                        continue;
-                    }
-
                     if (!(words.length >= 3)) {
                         System.out.println("Not enough parts for a `visb` command on line " + lineNumber);
                         continue;
                     }
 
-                    switch (words[2]) {
+                    String name = words[1];
+                    String operation = words[2].toLowerCase();
+
+                    if (!nameInternalTypeMap.containsKey(name)) {
+                        System.out.println("Can't switch an animation object that doesn't exist " + lineNumber);
+                        continue;
+                    }
+
+                    switch (operation) {
                         case "hide":
                         case "h": {
-                            Mogus mongi = mogusMap.get(words[1]);
+                            Mogus mongi = nameToMogusMap.get(name);
                             mongi.enabled = false;
-                            mogusMap.replace(words[1], mongi);
+                            nameToMogusMap.replace(name, mongi);
                         }
                         case "show":
                         case "s": {
-                            Mogus mongi = mogusMap.get(words[1]);
+                            Mogus mongi = nameToMogusMap.get(name);
                             mongi.enabled = true;
-                            mogusMap.replace(words[1], mongi);
+                            nameToMogusMap.replace(name, mongi);
                         }
                     }
                     continue;
 
-                } else if (types.containsKey(withoutLastChar)) {
+                } else if (nameInternalTypeMap.containsKey(withoutLastChar)) {
+                    // Logic for switching which mogus is selected
                     String identifier = words[0];
                     if (!identifier.endsWith(":")) {
                         System.out.println("Invalid identifier for section block at line: " + lineNumber);
                         continue;
                     }
                     // Set out type so it works with the legacy code
-                    type = types.get(withoutLastChar);
+                    currentMogusName = nameInternalTypeMap.get(withoutLastChar);
                     continue;
                 }
 
 
-                String[] sliced = data.split(" ", 4);
-                int x = Integer.parseInt(sliced[0]);
-                int y = Integer.parseInt(sliced[1]);
-                int delay = Integer.parseInt(sliced[2]);
+                int x = Integer.parseInt(words[0]);
+                int y = Integer.parseInt(words[1]);
+                int delay = Integer.parseInt(words[2]);
                 String text = "";
-                if (sliced.length == 4) {
-                    text = sliced[3];
+                if (words.length == 4) {
+                    text = words[3];
                     text = getStringFromQuotes(text);
                 }
-                Mogus prevMogus = mogusMap.get(types.get(type));
+                Mogus prevMogus = nameToMogusMap.get(nameInternalTypeMap.get(currentMogusName));
                 prevMogus.x = x;
                 prevMogus.y = y;
                 prevMogus.text = text;
-                mogusMap.replace(types.get(type), prevMogus);
+                nameToMogusMap.replace(nameInternalTypeMap.get(currentMogusName), prevMogus);
 
                 AnimFrame frame = new AnimFrame();
                 frame.delay = delay;
-                List<Mogus> mappedMogi = mogusMap.values().stream().toList();
+                List<Mogus> mappedMogi = nameToMogusMap.values().stream().toList();
                 frame.mogi = new ArrayList<>();
                 for (Mogus mogi :
                         mappedMogi) {

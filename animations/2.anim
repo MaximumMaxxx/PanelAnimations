@@ -29,7 +29,7 @@ red:
 200 190 400 "I'm actually the imposter"
 200 190 400 "Say goodbye!"
 
-visb red h
+# visb red h
 # switch green "LAmogi" Green
 
 green:
