@@ -34,7 +34,8 @@ public class Mogus {
         switch (type) {
             case "LAmogi" -> drawLeft(g);
             case "RAmogi" -> drawRight(g);
-            case "DAmogi" -> drawDead(g);
+            case "DLAmogi" -> drawLDead(g);
+            case "DRAmogi" -> drawRDead(g);
             default -> {
                 System.out.println("AAAAAAAAAAAAAAAAAAA");
                 System.exit(-2049032409);
@@ -45,14 +46,23 @@ public class Mogus {
 
     // ----------------------------------------------
 
-    private void drawDead(Graphics g) {
+    private void drawRDead(Graphics g) {
+    }
+
+    private void drawLDead(Graphics g) {
         g.setColor(color);
         drawBottomHalf(g);
-        g.drawPolygon(new int[]{
-                1
+        g.fillRect(x + 40, y + 12, 5, 10);
+        g.setColor(Color.black);
+        int leftLine = 15;
+        int rightLine = 35;
+        int bonePointOffset = 10;
+        int middleOffset = 10;
+        g.drawPolyline(new int[]{
+                x + leftLine, x + leftLine, x + leftLine - bonePointOffset, x + leftLine, x + leftLine + middleOffset, x + rightLine - middleOffset, x + rightLine + bonePointOffset, x + rightLine, x + rightLine
         }, new int[]{
-                1
-        }, 1);
+                y + 10, y + 5, y + 3, y, y + 3, y, y + 3, y + 5, y + 10
+        }, 9);
     }
 
     private void drawLeft(Graphics g) {
