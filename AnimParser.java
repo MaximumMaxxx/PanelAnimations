@@ -179,6 +179,7 @@ public class AnimParser {
             case "red" -> Color.RED;
             case "black" -> Color.BLACK;
             case "blue" -> Color.BLUE;
+            case "purple" -> new Color(168, 50, 168);
             default -> Color.red;
         };
     }
