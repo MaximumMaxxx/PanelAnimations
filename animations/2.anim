@@ -1,11 +1,14 @@
 declare green "LAmogi" Green
 declare red "RAmogi" Red
 
+# Initialize everything
 red:
-120 190 0
+120 190 -1
 
 green:
-190 190 0
+190 190 -1
+
+# Actual animation starts here
 190 190 100
 190 190 700 "Hi red!"
 190 190 0
@@ -44,3 +47,4 @@ red:
 switch green "DLAmogi" Green
 
 200 190 400 "Boop!"
+200 190 -1

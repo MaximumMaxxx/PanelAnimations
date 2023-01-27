@@ -1,0 +1,61 @@
+declare green "DLAmogi" Green
+declare red "RAmogi" Red
+declare blue "LAmogi" Blue
+declare purple "RAmogi" Purple
+
+visb purple hide
+
+# Initialize everything
+red:
+200 190 -1
+
+green:
+250 190 -1
+
+blue:
+400 20 -1
+380 50 0
+360 70 0
+340 90 0
+320 110 0
+300 130 0
+280 150 0
+
+280 150 600 "Red! You are acting quite sus"
+280 150 600 "Please back away from the body before I report you"
+
+switch red DRAmogi Red
+
+280 150 300
+280 150 600 "Wait what!"
+280 150 -1
+
+purple:
+visb purple s
+
+100 140 -1
+100 140 600 "Blue! why did you kill red?!"
+100 140 0
+
+blue:
+280 150 600 "What do you mean?!"
+280 150 600 "I didn't kill him!"
+280 150 600 "He killed green!"
+280 150 -1
+
+purple:
+100 140 600 "How can I know that's true?"
+100 140 600 "You were clearly standing over his body"
+100 140 -1
+
+blue:
+280 150 600 "You literally just appeared out of nowhere!"
+280 150 -1
+
+purple:
+100 140 600 "I'm the damn engineer!"
+100 140 -1
+
+blue:
+280 150 600 "That's it! I'm calling a meeting"
+280 150 -1
