@@ -17,12 +17,11 @@ class Animation {
 
         panel.sleep(200);
 
-        AnimParser parser;
-//        AnimParser parser = new AnimParser("animations/1.anim");
-//        renderParser(panel, gPanel, offscreen, g, parser);
-        parser = new AnimParser("animations/2.anim");
-        renderParser(panel, gPanel, offscreen, g, parser);
-
+        renderFiles(new String[]{
+                "animations/1.anim",
+                "animations/2.anim",
+                "animations/3.anim"
+        }, panel, gPanel, offscreen, g);
 
         // I think for timing you'll need stacks and a hashmap
         // Good luck man
@@ -30,16 +29,29 @@ class Animation {
 
     }
 
+    public static void renderFiles(String[] files, DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g) {
+        AnimParser parser;
+        for (String file :
+                files) {
+            parser = new AnimParser(file);
+            renderParser(panel, gPanel, offscreen, g, parser);
+        }
+    }
+
     private static void renderParser(DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g, AnimParser parser) {
         for (AnimFrame frame : parser.frames) {
-            panel.sleep(1000 / FPS);
+            if (!(frame.delay < 0)) {
+                panel.sleep(1000 / FPS);
+            }
             clearRect(g, panel.getWidth(), panel.getHeight());
             for (Mogus mogi :
                     frame.mogi) {
                 mogi.draw(g);
             }
             gPanel.drawImage(offscreen, 0, 0, panel);
-            panel.sleep(frame.delay);
+            if (!(frame.delay < 0)) {
+                panel.sleep(frame.delay);
+            }
         }
     }
 
