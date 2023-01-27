@@ -37,7 +37,7 @@ public class Mogus {
             case "DLAmogi" -> drawLDead(g);
             case "DRAmogi" -> drawRDead(g);
             default -> {
-                System.out.println("AAAAAAAAAAAAAAAAAAA");
+                System.out.println("Invalid Mongus choice");
                 System.exit(-2049032409);
             }
         }
@@ -47,19 +47,28 @@ public class Mogus {
     // ----------------------------------------------
 
     private void drawRDead(Graphics g) {
+        g.setColor(color);
+        drawBottomHalf(g);
+        g.fillRect(x - 5, y + 12, 5, 12);
+        g.setColor(Color.black);
+        drawBone(g);
     }
 
     private void drawLDead(Graphics g) {
         g.setColor(color);
         drawBottomHalf(g);
-        g.fillRect(x + 40, y + 12, 5, 10);
+        g.fillRect(x + 40, y + 12, 5, 12);
         g.setColor(Color.black);
+        drawBone(g);
+    }
+
+    private void drawBone(Graphics g) {
         int leftLine = 15;
-        int rightLine = 35;
-        int bonePointOffset = 10;
-        int middleOffset = 10;
+        int rightLine = 25;
+        int bonePointOffset = 5;
+        int middleOffset = 5;
         g.drawPolyline(new int[]{
-                x + leftLine, x + leftLine, x + leftLine - bonePointOffset, x + leftLine, x + leftLine + middleOffset, x + rightLine - middleOffset, x + rightLine + bonePointOffset, x + rightLine, x + rightLine
+                x + leftLine, x + leftLine, x + leftLine - bonePointOffset, x + leftLine, x + leftLine + middleOffset, x + rightLine, x + rightLine + bonePointOffset, x + rightLine, x + rightLine
         }, new int[]{
                 y + 10, y + 5, y + 3, y, y + 3, y, y + 3, y + 5, y + 10
         }, 9);
