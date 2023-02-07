@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PanelAnimations.iml" filepath="$PROJECT_DIR$/PanelAnimations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/maps/maps.iml" filepath="$PROJECT_DIR$/maps/maps.iml" />
     </modules>
   </component>
 </project>

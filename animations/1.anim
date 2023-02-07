@@ -6,6 +6,7 @@
 # The rest are required
 # Delay is anything above the normal 10fps to make life easier
 declare red "RAmogi" Red
+bg skeld 0 0
 
 red:
 50 50 1000

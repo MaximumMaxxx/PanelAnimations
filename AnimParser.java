@@ -7,6 +7,9 @@ public class AnimParser {
     List<AnimFrame> frames = new ArrayList<>();
     public String ifilepath; // This should be unique for each parser. If it's not then it'll be pretty useless
     public String currentMogusName;
+    public String background;
+    public int bgx;
+    public int bgy;
     public HashMap<String, Mogus> nameToMoogusMap = new HashMap<>();
 
     public AnimParser(String filepath) {
@@ -29,9 +32,20 @@ public class AnimParser {
                 String firstKeyword = words[0];
                 String withoutLastChar = data.substring(0, firstKeyword.length() - 1);
 
+                if (firstKeyword.equals("bg")) {
+                    if (!(words.length >= 4)) {
+                        System.out.println("Not enough parts to `bg` line" + lineNumber);
+                        continue;
+                    }
+                    this.background = words[1];
+                    this.bgx = Integer.parseInt(words[2]);
+                    this.bgy = Integer.parseInt(words[3]);
+                }
+
                 if (firstKeyword.equals("declare")) {
                     if (!(words.length >= 4)) {
                         System.out.println("Not enough parts for a `declare` on line " + lineNumber);
+                        continue;
                     }
                     try {
                         String name = words[1];
@@ -133,6 +147,11 @@ public class AnimParser {
                 frame.delay = delay;
                 List<Mogus> mappedMogi = nameToMoogusMap.values().stream().toList();
                 frame.mogi = new ArrayList<>();
+                Background bgClass = new Background();
+                bgClass.background = background;
+                bgClass.x = bgx;
+                bgClass.y = bgy;
+                frame.background = bgClass;
 
                 for (Mogus mogi :
                         mappedMogi) {

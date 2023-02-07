@@ -1,5 +1,8 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.File;
 
 class Animation {
 
@@ -44,6 +47,19 @@ class Animation {
                 panel.sleep(1000 / FPS);
             }
             clearRect(g, panel.getWidth(), panel.getHeight());
+            // TODO! Make this function
+            Image img = null;
+            try {
+                img = ImageIO.read(new File("maps/" + frame.background.background + ".png"));
+            } catch (Exception e) {
+                System.out.println("Unable to load map " + frame.background.background);
+            }
+            g.drawImage(img, frame.background.x, frame.background.y, new ImageObserver() {
+                @Override
+                public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+                    return false;
+                }
+            });
             for (Mogus mogi :
                     frame.mogi) {
                 mogi.draw(g);
