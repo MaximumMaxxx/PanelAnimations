@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.util.ArrayList;
 
 class Animation {
 
@@ -20,16 +21,31 @@ class Animation {
 
         panel.sleep(200);
 
+        ArrayList<String> results = new ArrayList<>();
+
+
+        File[] files = new File("animations/").listFiles();
+
+        //If this pathname does not denote a directory, then listFiles() returns null.
+        try {
+
+            assert files != null;
+        } catch (AssertionError e) {
+            System.out.println("./animations has no files in it");
+        }
+        for (File file : files) {
+            if (file.isFile()) {
+                results.add(file.getName());
+            }
+        }
+
+        System.out.println(results);
+
         renderFiles(new String[]{
                 "animations/1.anim",
                 "animations/2.anim",
                 "animations/3.anim"
         }, panel, gPanel, offscreen, g);
-
-        // I think for timing you'll need stacks and a hashmap
-        // Good luck man
-
-
     }
 
     public static void renderFiles(String[] files, DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g) {
@@ -72,6 +88,9 @@ class Animation {
     }
 
 
+    // clearRect(g, Color.WHITE, panel.getWidth(), panel.getHeight());
+    // - where panel and g are local variables you defined in the calling
+    //   code, and you want the background to be white after clearing.
     static void clearRect(Graphics g, int width, int height) {
         Color current = g.getColor();
         g.setColor(Color.WHITE);
@@ -80,7 +99,4 @@ class Animation {
     }
 
 
-    // clearRect(g, Color.WHITE, panel.getWidth(), panel.getHeight());
-    // - where panel and g are local variables you defined in the calling
-    //   code, and you want the background to be white after clearing.
 }

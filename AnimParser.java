@@ -40,6 +40,7 @@ public class AnimParser {
                     this.background = words[1];
                     this.bgx = Integer.parseInt(words[2]);
                     this.bgy = Integer.parseInt(words[3]);
+                    continue;
                 }
 
                 if (firstKeyword.equals("declare")) {
