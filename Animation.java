@@ -3,7 +3,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class Animation {
 
@@ -21,66 +23,89 @@ class Animation {
 
         panel.sleep(200);
 
+
+        ArrayList<String> results = getListOfFiles("./animations/");
+        HashMap<String, Image> maps = loadMaps("./maps/");
+
+        renderFiles(
+                results.toArray(new String[0]),
+                maps,
+                panel,
+                gPanel,
+                offscreen,
+                g
+        );
+    }
+
+    private static HashMap<String, Image> loadMaps(String directory) {
+        String[] files = getListOfFiles(directory).toArray(new String[0]);
+        HashMap<String, Image> nameImageMap = new HashMap<>();
+
+        for (String imageFile :
+                files) {
+            try {
+                Image img = ImageIO.read(new File("maps/" + imageFile));
+                nameImageMap.put(imageFile, img);
+            } catch (Exception e) {
+                System.out.println("Unable to load map " + imageFile);
+                e.printStackTrace();
+            }
+
+        }
+
+        return nameImageMap;
+    }
+
+    private static ArrayList<String> getListOfFiles(String directory) {
+        File[] files = new File(directory + "/").listFiles();
         ArrayList<String> results = new ArrayList<>();
-
-
-        File[] files = new File("animations/").listFiles();
 
         //If this pathname does not denote a directory, then listFiles() returns null.
         try {
-
             assert files != null;
         } catch (AssertionError e) {
-            System.out.println("./animations has no files in it");
+            System.out.println("./" + directory + "has no files in it");
         }
         for (File file : files) {
             if (file.isFile()) {
-                results.add(file.getName());
+                results.add(directory + file.getName());
             }
         }
-
-        System.out.println(results);
-
-        renderFiles(new String[]{
-                "animations/1.anim",
-                "animations/2.anim",
-                "animations/3.anim"
-        }, panel, gPanel, offscreen, g);
+        return results;
     }
 
-    public static void renderFiles(String[] files, DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g) {
+    public static void renderFiles(String[] files, HashMap<String, Image> maps, DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g) {
         AnimParser parser;
         for (String file :
                 files) {
             parser = new AnimParser(file);
-            renderParser(panel, gPanel, offscreen, g, parser);
+            renderParser(panel, maps, gPanel, offscreen, g, parser);
         }
     }
 
-    private static void renderParser(DrawingPanel panel, Graphics gPanel, BufferedImage offscreen, Graphics g, AnimParser parser) {
+    private static void renderParser(DrawingPanel panel, HashMap<String, Image> maps, Graphics gPanel, BufferedImage offscreen, Graphics g, AnimParser parser) {
         for (AnimFrame frame : parser.frames) {
             if (!(frame.delay < 0)) {
                 panel.sleep(1000 / FPS);
             }
             clearRect(g, panel.getWidth(), panel.getHeight());
-            // TODO! Make this function
+
             Image img = null;
-            try {
-                img = ImageIO.read(new File("maps/" + frame.background.background + ".png"));
-            } catch (Exception e) {
-                System.out.println("Unable to load map " + frame.background.background);
+            if (frame.background.background != null) {
+                img = maps.get(frame.background.background);
             }
-            g.drawImage(img, frame.background.x, frame.background.y, new ImageObserver() {
+
+            for (Mogus mogi :
+                    frame.mogi) {
+                mogi.draw(g);
+            }
+
+            gPanel.drawImage(img, 0, 0, new ImageObserver() {
                 @Override
                 public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
                     return false;
                 }
             });
-            for (Mogus mogi :
-                    frame.mogi) {
-                mogi.draw(g);
-            }
-            gPanel.drawImage(offscreen, 0, 0, panel);
             if (!(frame.delay < 0)) {
                 panel.sleep(frame.delay);
             }
