@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,12 +41,15 @@ class Animation {
         String[] files = getListOfFiles(directory).toArray(new String[0]);
         HashMap<String, Image> nameImageMap = new HashMap<>();
 
-        for (String imageFile :
+        for
+        (String imageFile :
                 files) {
             try {
-                Image img = ImageIO.read(new File("maps/" + imageFile));
+                Image img = ImageIO.read(
+                        new File(imageFile)
+                );
                 nameImageMap.put(imageFile, img);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 System.out.println("Unable to load map " + imageFile);
                 e.printStackTrace();
             }

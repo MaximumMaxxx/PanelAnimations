@@ -8,6 +8,10 @@ public class Mogus {
     public Color color;
     public boolean enabled;
 
+    public Mogus(Color color, String type) {
+        this(color);
+        this.type = type;
+    }
 
     public Mogus(Color color) {
         // Mogi have a static color
