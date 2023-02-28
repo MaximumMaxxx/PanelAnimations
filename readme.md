@@ -11,3 +11,4 @@ Render animations using the Java drawing api.
 ### Helped me with stuff
 
 - Atticus [@roguefirework](https://github.com/roguefirework)
+- Jayden [@Jayder](https://github.com/ilhs1096069)
